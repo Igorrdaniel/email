@@ -1,8 +1,8 @@
 package com.example.email.service;
 
-import com.example.email.domain.model.EmailModel;
+import com.example.email.dtos.EmailDto;
 
 public interface EmailService {
 
-    EmailModel sendEmail(EmailModel emailModel);
+    EmailDto sendEmail(EmailDto emailDto);
 }

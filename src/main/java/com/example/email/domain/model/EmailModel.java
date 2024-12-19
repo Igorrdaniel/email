@@ -16,8 +16,6 @@ public class EmailModel {
   @Column(name = "user_id")
   private UUID userId;
 
-  @Version private Long version;
-
   private String emailFrom;
 
   private String emailTo;
@@ -32,20 +30,33 @@ public class EmailModel {
   @Enumerated(value = EnumType.STRING)
   private StatusEmail statusEmail;
 
+  public EmailModel(
+      UUID id,
+      String emailFrom,
+      String emailTo,
+      String subject,
+      String text,
+      LocalDateTime sendDateEmail,
+      StatusEmail statusEmail) {
+    this.id = id;
+    this.emailFrom = emailFrom;
+    this.emailTo = emailTo;
+    this.subject = subject;
+    this.text = text;
+    this.sendDateEmail = sendDateEmail;
+    this.statusEmail = statusEmail;
+  }
+
+  protected EmailModel() {
+    super();
+  }
+
   public UUID getId() {
     return id;
   }
 
   public void setId(UUID id) {
     this.id = id;
-  }
-
-  public Long getVersion() {
-    return version;
-  }
-
-  public void setVersion(Long version) {
-    this.version = version;
   }
 
   public UUID getUserId() {

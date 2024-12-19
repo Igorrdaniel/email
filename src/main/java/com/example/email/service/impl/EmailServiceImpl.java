@@ -2,6 +2,7 @@ package com.example.email.service.impl;
 
 import com.example.email.domain.model.EmailModel;
 import com.example.email.domain.repositories.EmailRepository;
+import com.example.email.dtos.EmailDto;
 import com.example.email.enums.StatusEmail;
 import com.example.email.service.EmailService;
 import jakarta.transaction.Transactional;
@@ -28,24 +29,32 @@ public class EmailServiceImpl implements EmailService {
 
   @Override
   @Transactional
-  public EmailModel sendEmail(EmailModel emailModel) {
+  public EmailDto sendEmail(EmailDto emailDto) {
+    EmailModel email =
+        new EmailModel(
+            emailDto.getId(),
+            emailFrom,
+            emailDto.getEmailTo(),
+            emailDto.getSubject(),
+            emailDto.getText(),
+            LocalDateTime.now(),
+            emailDto.getStatusEmail());
+
     try {
-      emailModel.setSendDateEmail(LocalDateTime.now());
-      emailModel.setEmailFrom(emailFrom);
 
       SimpleMailMessage message = new SimpleMailMessage();
-      message.setTo(emailModel.getEmailTo());
-      message.setSubject(emailModel.getSubject());
-      message.setText(emailModel.getText());
+      message.setTo(emailDto.getEmailTo());
+      message.setSubject(emailDto.getSubject());
+      message.setText(emailDto.getText());
 
       javaEmailSender.send(message);
 
-      emailModel.setStatusEmail(StatusEmail.SENT);
+      emailDto.setStatusEmail(StatusEmail.SENT);
     } catch (MailException e) {
-      emailModel.setStatusEmail(StatusEmail.ERROR);
+      emailDto.setStatusEmail(StatusEmail.ERROR);
     } finally {
-      emailRepository.save(emailModel);
+      emailRepository.save(email);
     }
-    return emailModel;
+    return EmailDto.map(email);
   }
 }
